@@ -67,9 +67,9 @@ makes just the lib.
 ## How to use dev-server
 
 Go to the nix-shell and then type
-'''
+```
 ./dev-server.sh
-'''
+```
 
 This starts the ghcid that is tracking the source changes. It points to 
 bootstrap-version. It can be changed at .ghci-file. 

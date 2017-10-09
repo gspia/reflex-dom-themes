@@ -1,0 +1,5 @@
+packages: reflex-dom-themes.cabal 
+          examplesBs/themeExsBs.cabal
+          examplesSem/themeExsSem.cabal
+          examplesFou/themeExsFou.cabal
+          examplesW3/themeExsW3.cabal
