@@ -53,9 +53,10 @@ closure-compiler is provided as a build tool for the shell env and thus
 these last two copy commands work at the nix-shell.
 
 After that you can either open browser with `static/indexBs.html` or start 
-a warp or some other server and open it at localhost. Note that 
-indexBsS.html is for jsaddle-wai-trials. Similarly for the other themes 
-(files with large S, that is, indexFouS etc.,  are for jsaddle-wai).
+a warp (e.g. with -d static -p 8000) or some other server and open a 
+browser at localhost:8000. Note that 
+indexBsS.html is for jsaddle-wai-trials. (Similarly for the other t
+files with large S, that is, indexFouS etc.,  they are for jsaddle-wai trials).
 
 Command 
 ```

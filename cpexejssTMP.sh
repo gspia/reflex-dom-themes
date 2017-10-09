@@ -1,6 +1,13 @@
 
 
-# run only from nix-shell --argstr compiler ghcjs
+# run only from `nix-shell --argstr compiler ghcjs`
+# shell brings the closure compiler if not otherwise present
+
+mkdir ./static/js
+mkdir ./static/themeExFou.jsexe/
+mkdir ./static/themeExSem.jsexe/
+mkdir ./static/themeExBs.jsexe/
+mkdir ./static/themeExW3.jsexe/
 
 cp -R ./dist-newstyle/build/x86_64-linux/ghcjs-0.2.1/themeExsFou-0.1.0.0/c/themeExFou/build/themeExFou/themeExFou.jsexe/* ./static/themeExFou.jsexe/
 cp -R ./dist-newstyle/build/x86_64-linux/ghcjs-0.2.1/themeExsW3-0.1.0.0/c/themeExW3/build/themeExW3/themeExW3.jsexe/* ./static/themeExW3.jsexe/
