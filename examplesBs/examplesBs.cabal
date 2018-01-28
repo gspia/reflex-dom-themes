@@ -1,0 +1,45 @@
+name:                examplesBs
+version:             0.1.0.1
+synopsis:            Bootstrap 4 theme examples
+description:         Examples: for ghcid dev-work, for nix-build and
+                     for building a webkit2gtk app.
+license:             BSD3
+author:              gspia
+maintainer:          Use github to contact gspia
+copyright:           All rights reserved, gspia
+category:            Web
+build-type:          Simple
+cabal-version:       >=1.24
+
+library
+  exposed-modules:     MainW
+  hs-source-dirs:      libBs
+  default-language:    Haskell2010
+  build-depends:        base
+                      , containers
+                      , data-default
+                      -- , file-embed
+                      , ghcjs-dom
+                      , reflex
+                      , reflex-dom
+                      , reflex-dom-core
+                      , text
+                      , jsaddle
+                      , vector
+                      , reflex-dom-htmlea
+                      , reflex-dom-themes
+
+
+executable examplesBs
+  main-is:           Main.hs
+  hs-source-dirs:    app
+  default-language:  Haskell2010
+  build-depends:       base
+                     , examplesBs
+                     , reflex-dom
+                     , jsaddle
+  ghc-options: -Wall -Wincomplete-uni-patterns 
+               -O2 -threaded -rtsopts -with-rtsopts=-N
+               -Wincomplete-record-updates 
+               -Wmissing-import-lists
+

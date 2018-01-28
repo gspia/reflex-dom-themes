@@ -1,11 +1,5 @@
 name:                reflex-dom-themes
--- The package version.  See the Haskell package versioning policy (PVP)
--- for standards guiding when and how versions should be incremented.
--- https://wiki.haskell.org/Package_versioning_policy
--- PVP summary:      +-+------- breaking API changes
---                   | | +----- non-breaking API additions
---                   | | | +--- code changes with no API change
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            Class names for various css libs and icon sets.
 description:         Experimental set of functions providing tools to 
                      theming on top of reflex-dom-htmlea.
@@ -21,42 +15,39 @@ cabal-version:       >=1.24
 
 
 library
-  exposed-modules:     Reflex.Dom.Icons.Raw.Elusive
-                       , Reflex.Dom.Icons.Raw.FA
-                       , Reflex.Dom.Icons.Raw.FlagIcons
-                       , Reflex.Dom.Icons.Raw.FI
-                       , Reflex.Dom.Icons.Raw.IcoMoon
-                       , Reflex.Dom.Icons.Raw.Ionicons
-                       , Reflex.Dom.Icons.Raw.MDI
-                       , Reflex.Dom.Icons.Raw.MfgLabs
-                       , Reflex.Dom.Icons.Raw.OpenIconic
-                       , Reflex.Dom.Icons.Raw.Typicons
+  exposed-modules:     Reflex.Dom.Icon.Raw.Elusive
+                       , Reflex.Dom.Icon.Raw.FA
+                       , Reflex.Dom.Icon.Raw.FlagIcons
+                       , Reflex.Dom.Icon.Raw.FI
+                       , Reflex.Dom.Icon.Raw.IcoMoon
+                       , Reflex.Dom.Icon.Raw.Ionicons
+                       , Reflex.Dom.Icon.Raw.MDI
+                       , Reflex.Dom.Icon.Raw.MfgLabs
+                       , Reflex.Dom.Icon.Raw.OpenIconic
+                       , Reflex.Dom.Icon.Raw.Typicons
                        --
-                       , Reflex.Dom.Themes.Raw.BS4
-                       , Reflex.Dom.Themes.Raw.Foundation
-                       , Reflex.Dom.Themes.Raw.Semantic
-                       , Reflex.Dom.Themes.Raw.W3
+                       , Reflex.Dom.Theme.Raw.BS4
+                       , Reflex.Dom.Theme.Raw.Foundation
+                       , Reflex.Dom.Theme.Raw.Semantic
+                       , Reflex.Dom.Theme.Raw.W3
+                       --
+                       , Reflex.Dom.Component.Menu
+                       , Reflex.Dom.Component.NaiveI18n
   -- other-modules:
   -- other-extensions:
-  hs-source-dirs:      src
+  hs-source-dirs:      lib/src
   default-language:    Haskell2010
-  build-depends:       base              >=4.9 && <4.10
-                       , containers      >=0.5.7 && <0.6
+  build-depends:       base          
+                       , containers   
                        , data-default
-                       -- , mtl
-                       -- , reflex          >= 0.5 && < 0.6
-                       -- , reflex-dom-core >= 0.4 && < 0.5
+                       , lens       
+                       , mtl       
+                       , reflex    
+                       , reflex-dom-core 
                        , text
                        , reflex-dom-htmlea
-
-  if impl(ghcjs -any)
-    build-depends:       ghcjs-base
-    ghc-options: -Wall -Wincomplete-uni-patterns 
-                 -Wincomplete-record-updates 
-                 -Wmissing-import-lists -dedupe
-    cpp-options: -DGHCJS_BROWSER
-  else
-    ghc-options: -Wall -Wincomplete-uni-patterns 
-                 -Wincomplete-record-updates 
-                 -Wmissing-import-lists
+                       , chunked-data   
+  ghc-options: -Wall -Wincomplete-uni-patterns -O2
+               -Wincomplete-record-updates 
+               -Wmissing-import-lists
 

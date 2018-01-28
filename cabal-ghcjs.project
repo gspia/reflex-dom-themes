@@ -1,0 +1,7 @@
+compiler: ghcjs
+packages: 
+  reflex-dom-themes.cabal
+  examplesBs/
+  examplesSem/
+  examplesFou/
+  examplesW3/

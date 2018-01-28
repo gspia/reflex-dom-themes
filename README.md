@@ -6,79 +6,66 @@ to produce constants that can be used to build theme-libs building
 that are based on 
 [reflex-dom-htmlea](https://github.com/gspia/reflex-dom-htmlea).
 
-Why? Because it is too easy to make typo while making an attribute map 
-with appropriate class-contents. By using predefined constants, compiler
-will tell if the name is misspelled. This thus helps to avoid 
-runtime debugging.
-
-Why many css- and icon libs in one place? No good excuses nor 
-explanations for this one.
-(Maybe if willing to try and compare or something like that?) 
-
 This is WIP ATM and will probably stay such for a while.
 
 
 ## How to build
 
-After git cloning, start a shell
+First, get the repo with `git clone` and `cd` into the directory, and after that make sure that the reflex-platform is in place:
+
 ```
-nix-shell
+git submodule update --init --recursive
 ```
-Then you can build examples with
+
+To build with GHC, use the nix-shell command to enter the sandbox shell and use cabal (which is supplied by the sandbox). This builds webkit2gtk-version but 
+jsaddle-warp can be used as well.
+
 ```
+nix-shell -A shells.ghc
 cabal new-build all
 ```
-which builds webkit2gtk and wai-apps. 
-```
-./cpexesTMP.sh
-```
-copies the executables from dist-newbuild-directories to bin-directory. After 
-that you can just `./bin/themeExBs-wai`, which starts a server at localhost:8000.
-(Note that `-kits` don't show the themes and the fonts for semantic wai-app are
-not ok atm.)
 
-Alternatively, you can start shell with
-```
-nix-shell --argstr compiler ghcjs
-```
-and then
-```
-cabal new-configure --ghcjs
-cabal new-build all
-```
-which builds the js-sources. Command `./cpexejssTMP.sh` copies all 
-examples to static-directory and runs closure-compiler on them. 
-Command `./cpbsjsTMP.sh` does that only to bootstrap-example. Note that 
-closure-compiler is provided as a build tool for the shell env and thus 
-these last two copy commands work at the nix-shell.
+To build with GHCJS:
 
-After that you can either open browser with `static/indexBs.html` or start 
-a warp (e.g. with -d static -p 8000) or some other server and open a 
-browser at localhost:8000. Note that 
-indexBsS.html is for jsaddle-wai-trials. (Similarly for the other t
-files with large S, that is, indexFouS etc.,  they are for jsaddle-wai trials).
-
-Command 
 ```
-nix-build
-```
-makes just the lib.
-
-
-## How to use dev-server
-
-Go to the nix-shell and then type
-```
-./dev-server.sh
+nix-shell -A shells.ghcjs
+cabal --project-file=cabal-ghcjs.project --builddir=dist-ghcjs new-build all
 ```
 
-This starts the ghcid that is tracking the source changes. It points to 
-bootstrap-version. It can be changed at .ghci-file. 
+You can also build examples separately by replacing all with exe:name, e.g.
 
-See also [jsaddle](https://github.com/ghcjs/jsaddle).
+```
+cabal new-build exe:tableEx
+cabal --project-file=cabal-ghcjs.project --builddir=dist-ghcjs new-build exe:exampleTbl
+```
+
+For further information, see the following
+- [project-development documentation](https://github.com/reflex-frp/reflex-platform/blob/develop/docs/project-development.md)
+- [blanket project derivation (default.nix)](https://github.com/reflex-frp/reflex-platform/blob/develop/project/default.nix)
+- [reflex-project-skeleton](https://github.com/ElvishJerricco/reflex-project-skeleton)
+
+Note that if you have already obtained repo but want to update the 
+reflex-platform, you can try, e.g.,
+
+```
+git submodule foreach "(git checkout develop; git pull --recurse-submodules)&"
+```
+
+(Note that the above command gets the develop-branch of the platform.)
+
+## TODOs
+
+The wish list is quite long at the moment. The list can be seen
+at [todo.md](./todo.md).
+It includes larger ones that probably take longer time and things that are 
+on to-be-done-next list and on would-be-nice-to-have list.
 
 
 ## Caveats, bugs
+
+The webkit2gtk-versions are not working properly, because most of the css-libs
+assume some js and, at the moment, we have not implemented the corresponding
+functionality based on frp. 
 
 This lib is probably going to go through some re-organization 
 and such things. 

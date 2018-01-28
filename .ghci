@@ -1,6 +1,6 @@
 :set prompt "> "
-:set -isrc:examplesBs/lib:examplesFou/lib:examplesSem/lib:examplesW3/lib:test
-:load examplesBs/app-wai/Main.hs
+:set -ilib/src:examplesBs/libBs:examplesFou/libFou:examplesSem/libSem:examplesW3/libW3:test
+-- :load examplesBs/app-wai/Main.hs
 -- :load examplesFou/app-wai/Main.hs
 -- :load examplesSem/app-wai/Main.hs
 -- :load examplesW3/app-wai/Main.hs
