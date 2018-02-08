@@ -9,19 +9,13 @@
   };
   overrides = self: super: {
     reflex-dom-htmlea = self.callCabal2nix "reflex-dom-htmlea"
+      # ../reflex-dom-htmlea {};  /* use this when doing things locally */
       (pkgs.fetchFromGitHub {
         owner = "gspia";
         repo = "reflex-dom-htmlea";
-        rev = "0e682b302d748ae68e93aad9b39817c789220485";
-        sha256 = "0h5lz6bnacdr46a34k6cxa2pfrdcv7kvga4kws280hwi9z7qmvgb";
+        rev = "64a3ad9c234a722f76841839a9a7c5caa68318dc";
+        sha256 = "0y53la83n969b3py2smckrrn1g45i9hwbz7jn77aisfydpd0blda";
       }) {};
-    /* lens = self.callHackage "lens" "4.15.4" {}; */
-    /* free = self.callCabal2nix "free" (pkgs.fetchFromGitHub { */
-    /*   owner = "ekmett"; */
-    /*   repo = "free"; */
-    /*   rev = "a0c5bef18b9609377f20ac6a153a20b7b94578c9"; */
-    /*   sha256 = "0vh3hj5rj98d448l647jc6b6q1km4nd4k01s9rajgkc2igigfp6s"; */
-    /* }) {}; */
   };
 
   /* android.exampleTbl = { */
@@ -42,10 +36,10 @@
               "examplesSem" "examplesW3" ];
   };
   tools = ghc: with ghc; [
-    pkgs.haskellPackages.ghc-mod
+    /* pkgs.haskellPackages.ghc-mod */
     pkgs.haskellPackages.hasktags
     pkgs.haskellPackages.haskdogs
-    pkgs.haskellPackages.hdevtools
+    /* pkgs.haskellPackages.hdevtools */
     pkgs.haskellPackages.hindent
     pkgs.haskellPackages.hsimport
     pkgs.haskellPackages.hlint

@@ -1,7 +1,7 @@
 
 module Main where
 
-import MainW (mainW)
+import MainBs (mainW)
 import Reflex.Dom (run)
 
 main :: IO ()

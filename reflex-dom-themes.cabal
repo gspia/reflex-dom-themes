@@ -1,5 +1,5 @@
 name:                reflex-dom-themes
-version:             0.1.0.1
+version:             0.1.0.2
 synopsis:            Class names for various css libs and icon sets.
 description:         Experimental set of functions providing tools to 
                      theming on top of reflex-dom-htmlea.
@@ -37,17 +37,17 @@ library
   -- other-extensions:
   hs-source-dirs:      lib/src
   default-language:    Haskell2010
-  build-depends:       base          
-                       , containers   
+  build-depends:       base
+                       , containers
                        , data-default
-                       , lens       
-                       , mtl       
-                       , reflex    
-                       , reflex-dom-core 
+                       , lens
+                       , mtl
+                       , reflex
+                       , reflex-dom-core
                        , text
                        , reflex-dom-htmlea
-                       , chunked-data   
+                       , chunked-data
   ghc-options: -Wall -Wincomplete-uni-patterns -O2
-               -Wincomplete-record-updates 
+               -Wincomplete-record-updates
                -Wmissing-import-lists
 

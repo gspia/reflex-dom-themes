@@ -12,18 +12,19 @@ build-type:          Simple
 cabal-version:       >=1.24
 
 library
-  exposed-modules:     MainW
+  exposed-modules:     MainW3
   hs-source-dirs:      libW3
   default-language:    Haskell2010
   build-depends:        base
                       , containers
                       , data-default
+                      , lens
+                      , text
+                      , vector
                       , ghcjs-dom
                       , reflex
                       , reflex-dom
                       , reflex-dom-core
-                      , text
-                      , vector
                       , jsaddle
                       , reflex-dom-htmlea
                       , reflex-dom-themes
@@ -42,3 +43,26 @@ executable examplesW3
                -Wincomplete-record-updates 
                -Wmissing-import-lists
 
+-- To use ghcid and dev-server.sh, uncomment the following before
+-- entering into the nix-shell.
+-- executable examplesW3-wai
+--   if impl(ghcjs)
+--     buildable:       False
+--   main-is:           Main.hs
+--   hs-source-dirs:    app-wai
+--   default-language:  Haskell2010
+--   build-depends:       base
+--                      , examplesW3
+--                      , reflex-dom
+--                      , reflex-dom-core
+--                      , jsaddle
+--                      , jsaddle-warp
+--                      -- following are for ghcid autoloading
+--                      , wai
+--                      , warp
+--                      , websockets
+--                      , wai-app-static
+--   ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates
+--                -O2 -threaded -rtsopts -with-rtsopts=-N
+--                -Wmissing-import-lists -Wno-redundant-constraints
+-- 

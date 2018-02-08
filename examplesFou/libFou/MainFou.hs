@@ -7,9 +7,10 @@
 {-# LANGUAGE TypeFamilies              #-}
 {-# LANGUAGE UnicodeSyntax             #-}
 
-module MainW where
+module MainFou where
 
-import           Control.Monad                              (mapM)
+import           Control.Lens
+import           Control.Monad                              (mapM, join)
 import           Control.Monad.Fix
 import qualified Data.Map                                   as Map
 import           Data.Monoid
@@ -32,11 +33,7 @@ import           Reflex.Dom.HTML5.Elements                  as E
 import           Reflex.Dom.Icon.Raw.FI                     as FI
 import           Reflex.Dom.Theme.Raw.Foundation            as F
 
-import           Reflex.Dom.HTML5.Component.Table.Common
-import           Reflex.Dom.HTML5.Component.Table.TdComb
-import           Reflex.Dom.HTML5.Component.Table.TfootComb
-import           Reflex.Dom.HTML5.Component.Table.ThComb
-import           Reflex.Dom.HTML5.Component.TableV
+import           Reflex.Dom.HTML5.Component.Table
 
 
 ------------------------------------------------------------------------------
@@ -96,15 +93,6 @@ showMenuContent mi = do
 
 ------------------------------------------------------------------------------
 
--- | Setup part of the header information.
--- Note: reflex-dom-htmlea clearly needs a handy default-method for this one.
-tblHeaders :: forall t. Reflex t => ColHeaderV t
-tblHeaders = ColHeaderV
-    (V.fromList $ const (constDyn def) <$> [1..4]) -- vector of empty ECol's.
-    (V.fromList ["Id", "First Name", "Surname", "Address", "Phone number"])
-    def -- empty EThead, too.
-    -- (V.Vector (Dynamic t ECol)) (V.Vector Text) (Dynamic t EThead)
-
 -- | Set the information for the table.
 tblContent :: V.Vector (V.Vector Text)
 tblContent = V.fromList [r1,r2,r3,r4]
@@ -115,51 +103,43 @@ tblContent = V.fromList [r1,r2,r3,r4]
     r4 = V.fromList ["#4", "Firstname4 ", "Lastname 4", "Addr 4", "Phone 4"]
 
 -- | Make a table using mkTableV-component.
--- Note: some of the default-structures of reflex-dom-htmlea clearly needs
--- to be changed a bit so that the basic usage of tables would be easier.
--- E.g. we need an easy mechanism to update tr-attributes based on different
--- conditions and events (something like the cells or td's do have).
 tblWidget :: forall t m. (MonadWidget t m) => m (Dynamic t (Maybe Text))
 tblWidget = do
     let
-        hns = defaultThFuns
-            { _thfThAttr = const $ constDyn $ style "width: 150px" def
-            , _thfADEs = (_thfADEs defaultThFuns)
-                { _drawEl = drawDivContent2
-                -- , _actSt = listenMyCol 4
-                }
-            }
-        cPair = Just (hns, tblHeaders)
-        capDfs = Just (CaptionDef "Table 1. A Person list table example." def)
-        fns = defaultTdFuns
-            { _tdfADEs = CommonADEfuns (ownListen 4) actMU drawDivContent2 cellEvF
-            , _tdfTableAttr = constDyn $ setClasses [fouHover, fouTableScroll
-                                                    ] def
-            }
+        tblHeaders :: MonadWidget t m => Maybe (HeaderConfV t m)
+        tblHeaders = Just $ HeaderConfV
+            (def & set thfThAttr (const $ constDyn $ style "width: 150px" def)
+                 & set (thfADEs . drawEl) drawDivContent)
+            (V.fromList $ const (constDyn def) <$> [1..4]) -- vec of empty ECol's.
+            (V.fromList ["Id", "First Name", "Surname", "Address", "Phone number"])
+            def
+        capDfs = Just (CaptionConf "Table 1. A Person list table example." def)
+        tConf = def
+            & set tableCaptionV capDfs
+            & set tableHeaderV tblHeaders
+            & set tableTableAttrV (constDyn $ setClasses [fouHover, fouTableScroll]
+                                $ style "border-collapse: collapse" def)
+            & set (tableTdFunsV . tdfTrAttr) trAttrfun
+            & set (tableTdFunsV . tdfTdAttr) (const $ style "padding: 5px" def)
+            & set cellDrawBodyV drawDivContent
+            & set cellListenerBodyV (listenMyRow 4)
     rec
-            -- mkTableV fns capDfs cPair Nothing tblContent
-        tblSt <- ownMkTableV fns capDfs cPair Nothing tblContent dActElem
+        tblSt <- mkTableV tConf tblContent
         let dCell = _tsDynURelease tblSt
-            dActElem = _activeStateMe <$> dCell
+            dActElem = _activeStateElem <$> dCell
     let dmId = (giveId tblContent . giveRowNum) <$> dActElem
-        dTrA = _tdfTrAttr fns
     pure dmId
     where
-    -- Listen for clicks on tbody-cells and activate row on click
-    -- (update reflex-dom-htmlea to have a row listening listener).
-    ownListen cols ae = actstate ae & \d -> d {_activeStateListen = constDyn ag }
+    trAttrfun :: Dynamic t (ActiveState t) → ActElem → Dynamic t ETr
+    trAttrfun dAst _ae = mkETr <$> join (_activeStateActive <$> dAst)
       where
-        ag = ActiveGroup $ Set.fromList $ ae: myHF ae
-        actstate txt = def & \d1 -> d1 {_activeStateMe = txt }
-        myHF ∷ ActElem → [ActElem]
-        myHF (ActERC (i,_)) = ActErow i: [ActERC (i,j) | j <- [0..(cols-1)]]
-        myHF a = [a]
-    -- Variant of drawDivContent - (update reflex-dom-htmlea-version to this one)
-    drawDivContent2 ∷ ActElem → Text → ActiveState t
-               → m (Element EventResult (DomBuilderSpace m) t)
-    drawDivContent2 _me elm _actS = do
-        (e,_) <- eDivN' $ text elm
-        pure e
+        mkETr :: Bool -> ETr
+        mkETr b =
+               if b
+                   then style "background-color: lightgreen" def
+                   else style "" def
+                  -- then style "background-color: grey" def
+                  -- else style "background-color: lightgrey" def
     giveRowNum :: ActElem -> Maybe Int
     giveRowNum (ActERC (i,_)) = Just i
     giveRowNum _ = Nothing
@@ -167,66 +147,7 @@ tblWidget = do
     giveId _ Nothing = Nothing
     giveId v (Just i) = Just $ (v V.! i) V.! 0
 
--- | We make our own version here until this is fixed in reflex-dom-htmlea.
--- Especially, we want to override the mkRow-method.
--- Here we apply a dirty trick.
-ownMkTableV ∷ forall t m a. (Reflex t, DomBuilder t m, PostBuild t m
-     , TriggerEvent t m, MonadJSM m, MonadFix m
-     , MonadHold t m, DomBuilderSpace m ~ GhcjsDomSpace)
-         ⇒  TdFuns t m a
-         → Maybe (CaptionDef t)
-         → Maybe (ThFuns t m, ColHeaderV t)
-         → Maybe (TfootFuns t m, FootDefsV t)
-         → V.Vector (V.Vector a)
-         -> Dynamic t ActElem
-         → m (TableState t)
-ownMkTableV tdFs mcapdefs mColdefs mFootdefs acElmsVV dSelRowAE = mdo
-    let elms = V.imap mkA4r acElmsVV
-    (htTable, tblState) <- eTableD' (_tdfTableAttr tdFs) $ mdo
-        mkCaption mcapdefs
-        evB2 <- mkTheadV mColdefs evB tblSt
-        (_,evB1) <- eTbodyD' (_tdfTbodyAttr tdFs) $ do
-            ets <- V.imapM (mkRow evB tblSt) elms
-            pure $ leftmost $ V.toList ets
-        evB3 <- mkTfootV mFootdefs evB tblSt
-        let evB = leftmost [evB1, evB2, evB3]
-        tblSt <- updateTableState tblOE evB
-        pure tblSt
-    tblOE <- tableEvents htTable
-    pure tblState
-    where
-      mkA4r ∷ Int → V.Vector a → V.Vector (ActElem, a)
-      mkA4r i = V.imap (\j e -> (ActERC (i,j),e))
-      sameRow :: ActElem -> ActElem -> Bool
-      sameRow (ActERC (i,_)) (ActERC (k,_)) = i == k
-      sameRow (ActERC (i,_)) (ActErow k   ) = i == k
-      sameRow (ActErow i   ) (ActERC (k,_)) = i == k
-      sameRow (ActErow i   ) (ActErow k   ) = i == k
-      sameRow _ _ = False
-      mkRow ∷ Event t (TableEvent t)
-            → TableState t → Int → V.Vector (ActElem, a)
-            → m (Event t (TableEvent t))
-      mkRow evB tblSt2 i v = do
-          let ae2attr = _tdfTrAttr tdFs :: ActElem -> Dynamic t ETr
-              dETr1 = constDyn $ style "background-color: lightgreen" def
-                  :: Dynamic t ETr
-              dETr2 = constDyn $ style "" def :: Dynamic t ETr
-              ae2a ae = (\sr t1 t2 -> if sameRow ae sr then t1 else t2
-                        ) <$> dSelRowAE <*> dETr1 <*> dETr2
-          eTrD (ae2a $ ActErow i) $ do
-              eds <- V.forM v
-                    (\(ve,ae) -> eTdD (_tdfTdAttr tdFs ve)
-                        $ _tdfCombFun tdFs tdFs ve ae evB tblSt2 )
-              pure $ tblEvFiring $ V.toList eds
-              -- Note that in the _tdCombFun tdFs tdFs the first is used
-              -- to get the combining function and call it. The second is
-              -- a parameter to that function.
-
-
-
-
 ------------------------------------------------------------------------------
-
 
 -- Nav-things here: totally in WIP-state atm.
 
