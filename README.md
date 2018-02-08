@@ -57,7 +57,7 @@ git submodule foreach "(git checkout develop; git pull --recurse-submodules)&"
 See also the [.ghci](./.ghci). The warp-compilation can be used with ghci.
 Also, the [dev-server.sh](./dev-server.sh) can be used if first uncommenting
 the corresponding target from
-[exampleTbl.cabal](./exampleTbl/exampleTbl.cabal)-file and then entering
+[examplesBs.cabal](./examplesBs/examplesBs.cabal)-file and then entering
 the nix-shell with ghc-tools (not ghcjs). The examples don't use the external
 js-files very well at the moment.
 
