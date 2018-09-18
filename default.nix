@@ -15,7 +15,7 @@
         owner = "gspia";
         repo = "reflex-dom-htmlea";
         rev = "0baf429ad8e4a19b6e2575ffc828efe521e44f0f";
-        sha256 = "1aly8n6p746cgbabsp54ynfjsfbcj64np04rzma46djvwq4kcfv0"";
+        sha256 = "1aly8n6p746cgbabsp54ynfjsfbcj64np04rzma46djvwq4kcfv0";
       }) {};
   };
 
