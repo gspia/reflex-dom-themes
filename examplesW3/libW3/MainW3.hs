@@ -26,8 +26,8 @@ import           Reflex.Dom                                 hiding (mainWidget,
 import           Reflex.Dom.Core                            (mainWidget,
                                                              mainWidgetWithHead)
 
-import           Reflex.Dom.HTML5.Attrs                     as A
-import           Reflex.Dom.HTML5.Elements                  as E
+import qualified Reflex.Dom.HTML5.Attrs                     as A
+import qualified Reflex.Dom.HTML5.Elements                  as E
 
 import           Reflex.Dom.Icon.Raw.FA                     as FA
 import           Reflex.Dom.Theme.Raw.W3                    as W
@@ -45,38 +45,41 @@ mainW = mainWidgetWithHead headEl bodyEl
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
-headEl :: MonadWidget t m => m ()
+headEl ∷ MonadWidget t m ⇒ m ()
 headEl = do
-  eTitle def $ text "Main Title"
-  eMeta (charSet "utf-8" def) blank
-  eMeta (name "viewport" $ content "width=device-width, initial-scale=1" def)
+  E.title E.defTitle $ text "Main Title"
+  E.meta (A.charSet "utf-8" E.defMeta) blank
+  E.meta (A.name "viewport"
+         $ A.content "width=device-width, initial-scale=1" E.defMeta)
     blank
-  eLink ( ltStylesheet
-    $ href (URL "https://www.w3schools.com/w3css/4/w3.css") def) blank
-  eLink ( ltStylesheet
-    $ href (URL "https://fonts.googleapis.com/css?family=Raleway") def) blank
-  eLink ( ltStylesheet
-    $ href (URL "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
-    def) blank
+  E.link ( A.ltStylesheet
+    $ A.href (A.URL "https://www.w3schools.com/w3css/4/w3.css")
+             E.defLink) blank
+  E.link ( A.ltStylesheet
+    $ A.href (A.URL "https://fonts.googleapis.com/css?family=Raleway")
+             E.defLink) blank
+  E.link ( A.ltStylesheet
+    $ A.href (A.URL "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
+         E.defLink) blank
 
 
-bodyEl :: (MonadWidget t m) => m ()
+bodyEl ∷ (MonadWidget t m) ⇒ m ()
 bodyEl = do
-  miD :: Dynamic t MenuItem <- w3Nav
-  eDiv (style "margin-top:43px" def) $ do
-    eH1 def $ text "Welcome to reflex-dom-themes (W3.css)"
+  miD ∷ Dynamic t MenuItem ← w3Nav
+  E.div (A.style "margin-top:43px" E.defDiv) $ do
+    E.h1 E.defH1 $ text "Welcome to reflex-dom-themes (W3.css)"
     showMenuContent miD
 
-showMenuContent :: MonadWidget t m => Dynamic t MenuItem -> m ()
+showMenuContent ∷ MonadWidget t m ⇒ Dynamic t MenuItem → m ()
 showMenuContent mi = do
     let mt = fmap (T.pack . show) mi
-    ePN $ do
+    E.pN $ do
         text "The selected menu items was: "
         dynText mt
-    eH2N $ text "Decorated table example"
-    ePN $ do
-        dmTxt <- tblWidget
-        ePN $ dynText $ maybePersonIdTxt <$> dmTxt
+    E.h2N $ text "Decorated table example"
+    E.pN $ do
+        dmTxt ← tblWidget
+        E.pN $ dynText $ maybePersonIdTxt <$> dmTxt
         blank
     where
       maybePersonIdTxt (Just txt) = "Person " <> txt <> " is selected."
@@ -86,7 +89,7 @@ showMenuContent mi = do
 --------------------------------------------------------------------------------
 
 -- | Set the information for the table.
-tblContent :: V.Vector (V.Vector Text)
+tblContent ∷ V.Vector (V.Vector Text)
 tblContent = V.fromList [r1,r2,r3,r4]
   where
     r1 = V.fromList ["#1", "Firstname1 ", "Lastname 1", "Addr 1", "Phone 1"]
@@ -94,48 +97,54 @@ tblContent = V.fromList [r1,r2,r3,r4]
     r3 = V.fromList ["#3", "Firstname3 ", "Lastname 3", "Addr 3", "Phone 3"]
     r4 = V.fromList ["#4", "Firstname4 ", "Lastname 4", "Addr 4", "Phone 4"]
 
--- | Make a table using mkTableV-component.
-tblWidget :: forall t m. (MonadWidget t m) => m (Dynamic t (Maybe Text))
+-- | Make a table with mkTable.
+tblWidget ∷ forall t m. (MonadWidget t m)
+          ⇒ m (Dynamic t (Maybe Text))
 tblWidget = do
     let
-        tblHeaders :: MonadWidget t m => Maybe (HeaderConfV t m)
-        tblHeaders = Just $ HeaderConfV
-            (def & set thfThAttr (const $ constDyn $ style "width: 150px" def)
-                 & set (thfADEs . drawEl) drawDivContent)
-            (V.fromList $ const (constDyn def) <$> [1..4]) -- vector of empty ECol's.
+        tblHeaders ∷ MonadWidget t m ⇒ Maybe (HeaderConf t m ())
+        tblHeaders = Just $ HeaderConf
+            (defThFuns
+                & set thfThAttr (const $ constDyn $ A.style "width: 150px" E.defTh)
+                & set (thfADEs . adeDraw) drawDivContent)
+            (V.fromList $ const (constDyn E.defCol) <$> [1..4])
+            -- vector of empty ECol's.
             (V.fromList ["Id", "First Name", "Surname", "Address", "Phone number"])
-            def
-        capDfs = Just (CaptionConf "Table 1. A Person list table example." def)
-        tConf = def
-            & set tableCaptionV capDfs
-            & set tableHeaderV tblHeaders
-            & set tableTableAttrV (constDyn $ style "border-collapse: collapse" def)
-            & set (tableTdFunsV . tdfTrAttr) trAttrfun
-            & set (tableTdFunsV . tdfTdAttr) (const $ style "padding: 5px" def)
-            & set cellDrawBodyV drawDivContent
-            & set cellListenerBodyV (listenMyRow 4)
+            (constDyn E.defThead)
+        capDfs = Just (CaptionConf "Table 1. A Person list table example."
+                      (constDyn E.defCaption))
+        tConf = defTableConf
+            & set tableCaption capDfs
+            & set tableHeader tblHeaders
+            & set tableTableAttr
+                (constDyn $ A.style "border-collapse: collapse" E.defTable)
+            & set (tableTdFuns . tdfTrAttr) trAttrfun
+            & set (tableTdFuns . tdfTdAttr)
+                  (const $ A.style "padding: 5px" (constDyn E.defTd))
+            & set cellDrawBody drawDivContent
+            & set cellListenerBody (listenMyRow 4)
     rec
-        tblSt <- eDiv (setClasses [w3TableAll, w3Hoverable] def) $
-                  mkTableV tConf tblContent
-        let dCell = _tsDynURelease tblSt
-            dActElem = _activeStateElem <$> dCell
+        tblSt ← E.div (A.setClasses [w3TableAll, w3Hoverable] E.defDiv) $
+                  mkTable tConf tblContent
+        let dCell = _csDynURelease tblSt
+            dActElem = _activeStateElemId <$> dCell
     let dmId = (giveId tblContent . giveRowNum) <$> dActElem
     pure dmId
     where
-    trAttrfun :: Dynamic t (ActiveState t) → ActElem → Dynamic t ETr
+    trAttrfun ∷ Dynamic t (ActiveState t ActElem ()) → ActElem → Dynamic t E.Tr
     trAttrfun dAst _ae = mkETr <$> join (_activeStateActive <$> dAst)
       where
-        mkETr :: Bool -> ETr
+        mkETr ∷ Bool → E.Tr
         mkETr b =
                if b
-                   then setClasses [w3Green] def
-                   else setClasses [] def
-                  -- then style "background-color: grey" def
-                  -- else style "background-color: lightgrey" def
-    giveRowNum :: ActElem -> Maybe Int
+                   then A.setClasses [w3Green] E.defTr
+                   else A.setClasses [] E.defTr
+                  -- then A.style "background-color: grey" E.defTr
+                  -- else A.style "background-color: lightgrey" E.defTr
+    giveRowNum ∷ ActElem → Maybe Int
     giveRowNum (ActERC (i,_)) = Just i
     giveRowNum _ = Nothing
-    giveId :: V.Vector (V.Vector Text) -> Maybe Int -> Maybe Text
+    giveId ∷ V.Vector (V.Vector Text) → Maybe Int → Maybe Text
     giveId _ Nothing = Nothing
     giveId v (Just i) = Just $ (v V.! i) V.! 0
 
@@ -145,115 +154,116 @@ tblWidget = do
 
 
 -- "name" and "icon"
-data MenuItem = MenuItem Text ClassName
+data MenuItem = MenuItem Text A.ClassName
   deriving (Eq,Show)
 
 data MI t
-  = MI { miClicked :: Event t ()
-       , miItem    :: MenuItem
+  = MI { miClicked ∷ Event t ()
+       , miItem    ∷ MenuItem
        }
 
-menuItems :: [MenuItem]
+menuItems ∷ [MenuItem]
 menuItems =
-  [ MenuItem "Active" faAutomobile
-  , MenuItem "Link" faAreaChart
+  [ MenuItem "Active" faCar
+  , MenuItem "Link" faChartArea
   , MenuItem "Another link" faBlind
   , MenuItem "Link4" faBell
   ]
 
-hasActive :: Reflex t => Dynamic t EA -> Dynamic t Bool
+hasActive ∷ Reflex t ⇒ Dynamic t E.A → Dynamic t Bool
 hasActive ea = do
-  let dcn = fmap attrGetClassName ea
-  fmap (\(ClassName cn) -> T.count "active" cn > 0) dcn
+  let dcn = fmap A.attrGetClassName ea
+  fmap (\(A.ClassName cn) → T.count "active" cn > 0) dcn
 
 
-mkMenuItemD :: forall t m. (MonadWidget t m)
-            => Dynamic t EA -> MenuItem -> m (MI t)
+mkMenuItemD ∷ forall t m. (MonadWidget t m)
+            ⇒ Dynamic t E.A → MenuItem → m (MI t)
 mkMenuItemD cls mi@(MenuItem txt ico) = do
-  (e,_) <- eAD' cls $ do
-    if ico /= ClassName ""
-       then eI (addClass "fa" $ setClasses [ico] def) blank
+  (e,_) ← E.aD' cls $ do
+    if ico /= A.ClassName ""
+       then E.i (A.addClass "fa" $ A.setClasses [ico] E.defI) blank
        else blank
     text txt
   pure $ MI (domEvent Click e) mi
 
 
-mkMenuFromLsts :: MonadWidget t m
-               => [Dynamic t EA] -> [MenuItem] -> Int -> m (MI t)
+mkMenuFromLsts ∷ MonadWidget t m
+               ⇒ [Dynamic t E.A] → [MenuItem] → Int → m (MI t)
 mkMenuFromLsts aLst mLst i = mkMenuItemD (aLst Prelude.!! i) (mLst Prelude.!! i)
 
-mkW3NavItems :: forall t m.
-  MonadWidget t m => [MenuItem] -> Dynamic t MenuItem -> m (Dynamic t MenuItem)
+mkW3NavItems ∷ forall t m.
+  MonadWidget t m ⇒ [MenuItem] → Dynamic t MenuItem → m (Dynamic t MenuItem)
 mkW3NavItems menuis mi = mdo
   let i = length menuis
       idxLst = [0..(i-1)]
-  es :: [MI t] <- mapM (mkMenuFromLsts mas menuis) idxLst
+  es ∷ [MI t] ← mapM (mkMenuFromLsts mas menuis) idxLst
   let ev = tagPromptlyDyn mi (updated mi)
-  dE :: Dynamic t MenuItem <- holdDyn (head menuis) $
-      leftmost $ map (\e -> miItem e <$ miClicked e) es
-    -- <- holdDyn (constDyn $ head menuis) $
+  dE ∷ Dynamic t MenuItem ← holdDyn (head menuis) $
+      leftmost $ map (\e → miItem e <$ miClicked e) es
+    -- ← holdDyn (constDyn $ head menuis) $
     -- leftmost $
     --   -- [constDyn (head menuis) <$ ev] ++
-    --     (fmap (\e -> constDyn (miItem e) <$ miClicked e) es)
+    --     (fmap (\e → constDyn (miItem e) <$ miClicked e) es)
   -- let dE = join ddE
-  let mas = fmap (\j -> ffor dE $ \d -> selActive d j) idxLst
+  let mas = fmap (\j → ffor dE $ \d → selActive d j) idxLst
   pure dE
   where
-    selActive :: MenuItem -> Int -> EA
+    selActive ∷ MenuItem → Int → E.A
     selActive d i =
         if d == menuis Prelude.!! i
            then hR "#" linkCA
            else hR "#" linkC
-    linkC = setClasses [w3BarItem, w3Button, w3HideSmall, w3Mobile] def
-    linkCA = setClasses [w3BarItem, w3Button, w3HideSmall, w3Mobile, w3Gray] def
-    -- ulCl = setClasses [bsNavbarNav, bsMrAuto] def
-    hR u = href (URL u)
+    linkC = A.setClasses [w3BarItem, w3Button, w3HideSmall, w3Mobile] E.defA
+    linkCA = A.setClasses
+        [w3BarItem, w3Button, w3HideSmall, w3Mobile, w3Gray] E.defA
+    hR u = A.href (A.URL u)
 
-mkW3NavItemsSmall :: forall t m.
-  MonadWidget t m => [MenuItem] -> Dynamic t Bool ->  m (Dynamic t MenuItem)
+mkW3NavItemsSmall ∷ forall t m.
+  MonadWidget t m ⇒ [MenuItem] → Dynamic t Bool →  m (Dynamic t MenuItem)
 mkW3NavItemsSmall menuis dShow = do
   let i = length menuis
       idxLst = [0..(i-1)]
-      dDivAttrs = ffor dShow $ \b ->
+      dDivAttrs = ffor dShow $ \b →
         if b
-           then setClasses [w3Show] def
-           else setClasses [w3Hide] def
-  eDivD dDivAttrs $ mdo
-    es :: [MI t] <- mapM (mkMenuFromLsts mas menuis) idxLst
-    dE :: Dynamic t MenuItem <- holdDyn (head menuis) $
-      leftmost (fmap (\e -> miItem e <$ miClicked e) es)
-    let mas = fmap (\j -> ffor dE $ \d -> selActive d j) idxLst
+           then A.setClasses [w3Show] E.defDiv
+           else A.setClasses [w3Hide] E.defDiv
+  E.divD dDivAttrs $ mdo
+    es ∷ [MI t] ← mapM (mkMenuFromLsts mas menuis) idxLst
+    dE ∷ Dynamic t MenuItem ← holdDyn (head menuis) $
+      leftmost (fmap (\e → miItem e <$ miClicked e) es)
+    let mas = fmap (\j → ffor dE $ \d → selActive d j) idxLst
     pure dE
   where
-    selActive :: MenuItem -> Int -> EA
+    selActive ∷ MenuItem → Int → E.A
     selActive d i =
         if d == menuis Prelude.!! i
            then hR "#" linkCA
            else hR "#" linkC
-    linkC = setClasses [w3BarItem, w3Button, w3HideMedium, w3HideLarge, w3Mobile] def
-    linkCA = setClasses [w3BarItem, w3Button, w3HideMedium,
-      w3HideLarge, w3Mobile, w3Blue] def
-    hR u = href (URL u)
+    linkC = A.setClasses
+        [w3BarItem, w3Button, w3HideMedium, w3HideLarge, w3Mobile] E.defA
+    linkCA = A.setClasses [w3BarItem, w3Button, w3HideMedium,
+      w3HideLarge, w3Mobile, w3Blue] E.defA
+    hR u = A.href (A.URL u)
 
-w3Nav :: (MonadWidget t m) => m (Dynamic t MenuItem)
+w3Nav ∷ (MonadWidget t m) ⇒ m (Dynamic t MenuItem)
 w3Nav =
-  eDiv navAttrs $ mdo
-    eSpan (setClasses [w3BarItem] def) $ text "Menu"
-    eClk <- eButtonC attrs
-      $ eI (addClass "fa" $ setClasses [faBars] def ) blank
-    dE2 :: Dynamic t MenuItem <- mkW3NavItems menuItems dE
-    dES :: Dynamic t MenuItem <- mkW3NavItemsSmall menuItems dNavToggle
-    ddE <- holdDyn (constDyn $ head menuItems) $
+  E.div navAttrs $ mdo
+    E.span (A.setClasses [w3BarItem] E.defSpan) $ text "Menu"
+    eClk ← E.buttonC attrs
+      $ E.i (A.addClass "fa" $ A.setClasses [faBars] E.defI ) blank
+    dE2 ∷ Dynamic t MenuItem ← mkW3NavItems menuItems dE
+    dES ∷ Dynamic t MenuItem ← mkW3NavItemsSmall menuItems dNavToggle
+    ddE ← holdDyn (constDyn $ head menuItems) $
       leftmost [dE2 <$ updated dE2, dES <$ updated dES]
     let dE = join ddE
-    dNavToggle <- toggle False $ leftmost [eClk, () <$ updated dES]
+    dNavToggle ← toggle False $ leftmost [eClk, () <$ updated dES]
     pure dE
   where
-    navAttrs = style "z-index:4" $ setClasses
-      [w3Bar, w3Top, w3White, w3Large] def
-    attrs = setClasses [w3BarItem, w3Button, w3HideMedium
-                       , w3HideLarge, w3HoverNone, w3HoverTextLightGrey] def
-    hR u = href (URL u)
+    navAttrs = A.style "z-index:4" $ A.setClasses
+      [w3Bar, w3Top, w3White, w3Large] E.defDiv
+    attrs = A.setClasses [w3BarItem, w3Button, w3HideMedium
+              , w3HideLarge, w3HoverNone, w3HoverTextLightGrey] E.defButton
+    hR u = A.href (A.URL u)
     -- divCl = def
 
 

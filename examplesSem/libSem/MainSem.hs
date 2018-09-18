@@ -27,8 +27,8 @@ import           Reflex.Dom                                 hiding (mainWidget,
 import           Reflex.Dom.Core                            (mainWidget,
                                                              mainWidgetWithHead)
 
-import           Reflex.Dom.HTML5.Attrs                     as A
-import           Reflex.Dom.HTML5.Elements                  as E
+import qualified Reflex.Dom.HTML5.Attrs                     as A
+import qualified Reflex.Dom.HTML5.Elements                  as E
 
 import           Reflex.Dom.Icon.Raw.Ionicons               as I
 import           Reflex.Dom.Theme.Raw.Semantic              as S
@@ -45,48 +45,55 @@ mainW = mainWidgetWithHead headEl bodyEl
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
-headEl :: MonadWidget t m => m ()
+headEl ∷ MonadWidget t m ⇒ m ()
 headEl = do
-  eTitle def $ text "Main Title"
-  eMeta (charSet "utf-8" def) blank
-  eMeta (httpEquiv "x-ua-compatible" $ content "ie=edge,chrome=1" def) blank
-  eMeta (name "viewport" $
-    content "width=device-width, initial-scale=1, maximum-scale=1.0" def) blank
-  eLink ( ltStylesheet
-    $ href (URL "http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css") def) blank
-  eLink ( ltStylesheet
-    -- $ href (URL "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css")
-    $ href (URL "css/icon.min.css") def) blank
-  eLink ( ltStylesheet
-    $ href (URL "css/semantic.min.css") def) blank
-  eLink ( ltStylesheet $ href (URL "css/sem.css") def) blank
+  E.title E.defTitle $ text "Main Title"
+  E.meta (A.charSet "utf-8" E.defMeta) blank
+  E.meta (A.httpEquiv "x-ua-compatible" $ A.content "ie=edge,chrome=1"
+         E.defMeta) blank
+  E.meta (A.name "viewport" $
+    A.content "width=device-width, initial-scale=1, maximum-scale=1.0"
+        E.defMeta) blank
+  E.link ( A.ltStylesheet
+    $ A.href
+    (A.URL "http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css")
+    E.defLink) blank
+  -- E.link ( A.ltStylesheet
+    -- A.href (A.URL "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css")
+    --  A.href (A.URL "css/icon.min.css") E.defLink) blank
+  -- E.link ( A.ltStylesheet
+  --    A.href (A.URL "css/semantic.min.css") E.defLink) blank
+  E.link ( A.ltStylesheet
+    $ A.href (A.URL "https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.3/semantic.min.css") E.defLink) blank
+  -- E.link ( A.ltStylesheet $ A.href (A.URL "css/sem.css") E.defLink) blank
 
 
 
-bodyEl :: (MonadWidget t m) => m ()
+bodyEl ∷ (MonadWidget t m) ⇒ m ()
 bodyEl = do
-  miD :: Dynamic t MenuItem <- semNav
-  eDiv (addClass "main" $ setClasses [semUi, semText, semContainer] def) $ do
-    eH1 (setClasses [semUi, semHeader] def) $
+  miD ∷ Dynamic t MenuItem ← semNav
+  E.div ( A.addClass "main"
+        $ A.setClasses [semUi, semText, semContainer] E.defDiv) $ do
+    E.h1 (A.setClasses [semUi, semHeader] E.defH1) $
       text "Welcome to reflex-dom-themes (Semantic)"
-    eP def $ do
+    E.p E.defP $ do
       text "Semantic icon trial: "
-      eI (setClasses [semInbox,semIcon] def) blank
+      E.i (A.setClasses [semInbox,semIcon] E.defI) blank
     showMenuContent miD
   footer
 
 ------------------------------------------------------------------------------
 
-showMenuContent :: MonadWidget t m => Dynamic t MenuItem -> m ()
+showMenuContent ∷ MonadWidget t m ⇒ Dynamic t MenuItem → m ()
 showMenuContent mi = do
     let mt = fmap (T.pack . show) mi
-    ePN $ do
+    E.pN $ do
         text "The selected menu items was: "
         dynText mt
-    eH2N $ text "Decorated table example"
-    ePN $ do
-        dmTxt <- tblWidget
-        ePN $ dynText $ maybePersonIdTxt <$> dmTxt
+    E.h2N $ text "Decorated table example"
+    E.pN $ do
+        dmTxt ← tblWidget
+        E.pN $ dynText $ maybePersonIdTxt <$> dmTxt
         blank
     where
       maybePersonIdTxt (Just txt) = "Person " <> txt <> " is selected."
@@ -95,7 +102,7 @@ showMenuContent mi = do
 ------------------------------------------------------------------------------
 
 -- | Set the information for the table.
-tblContent :: V.Vector (V.Vector Text)
+tblContent ∷ V.Vector (V.Vector Text)
 tblContent = V.fromList [r1,r2,r3,r4]
   where
     r1 = V.fromList ["#1", "Firstname1 ", "Lastname 1", "Addr 1", "Phone 1"]
@@ -104,93 +111,99 @@ tblContent = V.fromList [r1,r2,r3,r4]
     r4 = V.fromList ["#4", "Firstname4 ", "Lastname 4", "Addr 4", "Phone 4"]
 
 -- | Make a table using mkTableV-component.
-tblWidget :: forall t m. (MonadWidget t m) => m (Dynamic t (Maybe Text))
+tblWidget ∷ forall t m. (MonadWidget t m)
+          ⇒ m (Dynamic t (Maybe Text))
 tblWidget = do
     let
-        tblHeaders :: MonadWidget t m => Maybe (HeaderConfV t m)
-        tblHeaders = Just $ HeaderConfV
-            (def & set thfThAttr (const $ constDyn $ style "width: 150px" def)
-                 & set (thfADEs . drawEl) drawDivContent)
-            (V.fromList $ const (constDyn def) <$> [1..4]) -- vector of empty ECol's.
+        tblHeaders ∷ MonadWidget t m ⇒ Maybe (HeaderConf t m ())
+        tblHeaders = Just $ HeaderConf
+            (defThFuns
+                & set thfThAttr (const $ constDyn $ A.style "width: 150px" E.defTh)
+                & set (thfADEs . adeDraw) drawDivContent)
+            (V.fromList $ const (constDyn E.defCol) <$> [1..4])
+            -- vector of empty E.Col's.
             (V.fromList ["Id", "First Name", "Surname", "Address", "Phone number"])
-            def
-        capDfs = Just (CaptionConf "Table 1. A Person list table example." def)
-        tConf = def
-            & set tableCaptionV capDfs
-            & set tableHeaderV tblHeaders
-            & set tableTableAttrV (constDyn $ setClasses [semUi, ClassName "single"
-                                , semLine, semSelectable, semTable]
-                                $ style "border-collapse: collapse" def)
-            & set (tableTdFunsV . tdfTrAttr) trAttrfun
-            & set (tableTdFunsV . tdfTdAttr) (const $ style "padding: 5px" def)
-            & set cellDrawBodyV drawDivContent
-            & set cellListenerBodyV (listenMyRow 4)
+            (constDyn E.defThead)
+        capDfs = Just (CaptionConf "Table 1. A Person list table example."
+                      (constDyn E.defCaption))
+        tConf = defTableConf
+            & set tableCaption capDfs
+            & set tableHeader tblHeaders
+            & set tableTableAttr (constDyn $ A.setClasses [semUi
+                                 , A.ClassName "single"
+                                 , semLine, semSelectable, semTable]
+                                $ A.style "border-collapse: collapse" E.defTable)
+            & set (tableTdFuns . tdfTrAttr) trAttrfun
+            & set (tableTdFuns . tdfTdAttr)
+                  (const $ A.style "padding: 5px" (constDyn E.defTd))
+            & set cellDrawBody drawDivContent
+            & set cellListenerBody (listenMyRow 4)
     rec
-        tblSt :: TableState t <- mkTableV tConf tblContent
-        let dCell = _tsDynURelease tblSt
-            dActElem = _activeStateElem <$> dCell
+        tblSt ∷ CompState t ActElem () ← mkTable tConf tblContent
+        let dCell = _csDynURelease tblSt
+            dActElem = _activeStateElemId <$> dCell
     let dmId = (giveId tblContent . giveRowNum) <$> dActElem
     pure dmId
     where
-    trAttrfun :: Dynamic t (ActiveState t) → ActElem → Dynamic t ETr
+    trAttrfun ∷ Dynamic t (ActiveState t ActElem ()) → ActElem → Dynamic t E.Tr
     trAttrfun dAst _ae = mkETr <$> join (_activeStateActive <$> dAst)
       where
-        mkETr :: Bool -> ETr
+        mkETr ∷ Bool → E.Tr
         mkETr b =
                if b
-                   then setClasses [semActive] def
-                   else setClasses [] def
-                  -- then style "background-color: grey" def
-                  -- else style "background-color: lightgrey" def
-    giveRowNum :: ActElem -> Maybe Int
+                   then A.setClasses [semActive] E.defTr
+                   else A.setClasses [] E.defTr
+                  -- then A.style "background-color: grey" E.defTr
+                  -- else A.style "background-color: lightgrey" E.defTr
+    giveRowNum ∷ ActElem → Maybe Int
     giveRowNum (ActERC (i,_)) = Just i
     giveRowNum _ = Nothing
-    giveId :: V.Vector (V.Vector Text) -> Maybe Int -> Maybe Text
+    giveId ∷ V.Vector (V.Vector Text) → Maybe Int → Maybe Text
     giveId _ Nothing = Nothing
     giveId v (Just i) = Just $ (v V.! i) V.! 0
 
 
 ------------------------------------------------------------------------------
 
-footer :: MonadWidget t m => m ()
+footer ∷ MonadWidget t m ⇒ m ()
 footer =
-  eDiv (addClass "footer" $ setClasses [semUi, semInverted
-                                       , semVertical, semSegment] def) $
-    eDiv (setClasses [semUi, semCenter, semAligned, semContainer] def) $
-      eDiv (setClasses [semUi,semStackable
-                       ,semInverted,semDivided,semGrid] def) $ do
-        eDiv (setClasses [semThree, semWide, semColumn] def) $ do
-          eH4 (setClasses [semUi, semInverted, semHeader] def) $
+  E.div (A.addClass "footer"
+        $ A.setClasses [semUi, semInverted , semVertical, semSegment] E.defDiv) $
+    E.div (A.setClasses [semUi, semCenter, semAligned, semContainer] E.defDiv) $
+      E.div (A.setClasses [semUi,semStackable
+                          ,semInverted,semDivided,semGrid] E.defDiv) $ do
+        E.div (A.setClasses [semThree, semWide, semColumn] E.defDiv) $ do
+          E.h4 (A.setClasses [semUi, semInverted, semHeader] E.defH4) $
             text "Group 1"
-          eDiv grpAttr $ do
-            eA aAttr $ text "Link g1 one"
-            eA aAttr $ text "Link g1 two"
-            eA aAttr $ text "Link g1 three"
-            eA aAttr $ text "Link g1 four"
-        eDiv (setClasses [semThree, semWide, semColumn] def) $ do
-          eH4 (setClasses [semUi, semInverted, semHeader] def) $
+          E.div grpAttr $ do
+            E.a aAttr $ text "Link g1 one"
+            E.a aAttr $ text "Link g1 two"
+            E.a aAttr $ text "Link g1 three"
+            E.a aAttr $ text "Link g1 four"
+        E.div (A.setClasses [semThree, semWide, semColumn] E.defDiv) $ do
+          E.h4 (A.setClasses [semUi, semInverted, semHeader] E.defH4) $
             text "Group 2"
-          eDiv grpAttr $ do
-            eA aAttr $ text "Link g2 one"
-            eA aAttr $ text "Link g2 two"
-            eA aAttr $ text "Link g2 three"
-            eA aAttr $ text "Link g2 four"
-        eDiv (setClasses [semThree, semWide, semColumn] def) $ do
-          eH4 (setClasses [semUi, semInverted, semHeader] def) $
+          E.div grpAttr $ do
+            E.a aAttr $ text "Link g2 one"
+            E.a aAttr $ text "Link g2 two"
+            E.a aAttr $ text "Link g2 three"
+            E.a aAttr $ text "Link g2 four"
+        E.div (A.setClasses [semThree, semWide, semColumn] E.defDiv) $ do
+          E.h4 (A.setClasses [semUi, semInverted, semHeader] E.defH4) $
             text "Group 3"
-          eDiv grpAttr $ do
-            eA aAttr $ text "Link g3 one"
-            eA aAttr $ text "Link g3 two"
-            eA aAttr $ text "Link g3 three"
-            eA aAttr $ text "Link g3 four"
-        eDiv (setClasses [semSeven, semWide, semColumn] def) $ do
-          eH4 (setClasses [semUi, semInverted, semHeader] def) $
+          E.div grpAttr $ do
+            E.a aAttr $ text "Link g3 one"
+            E.a aAttr $ text "Link g3 two"
+            E.a aAttr $ text "Link g3 three"
+            E.a aAttr $ text "Link g3 four"
+        E.div (A.setClasses [semSeven, semWide, semColumn] E.defDiv) $ do
+          E.h4 (A.setClasses [semUi, semInverted, semHeader] E.defH4) $
             text "Footer Header"
-          eP def $ text "Hmm"
+          E.p E.defP $ text "Hmm"
 
   where
-    aAttr = setClasses [semItem] $ href (URL "#") def
-    grpAttr = setClasses [semUi, semInverted, semLink, semList] def
+    aAttr = A.setClasses [semItem] $ A.href (A.URL "#") E.defA
+    grpAttr = A.setClasses [semUi, semInverted, semLink, semList] E.defDiv
 
 ------------------------------------------------------------------------------
 
@@ -245,15 +258,15 @@ footer =
 -- Nav-things here: totally in WIP-state atm.
 
 -- "name" and "icon"
-data MenuItem = MenuItem Text ClassName
+data MenuItem = MenuItem Text A.ClassName
   deriving (Eq,Show)
 
 data MI t
-  = MI { miClicked :: Event t ()
-       , miItem    :: MenuItem
+  = MI { miClicked ∷ Event t ()
+       , miItem    ∷ MenuItem
        }
 
-menuItems :: [MenuItem]
+menuItems ∷ [MenuItem]
 menuItems =
   [ MenuItem "Active" semExternal
   , MenuItem "Link" semHeartbeat
@@ -261,85 +274,85 @@ menuItems =
   , MenuItem "Link4" semQrcode
   ]
 
-hasActive :: Reflex t => Dynamic t EA -> Dynamic t Bool
+hasActive ∷ Reflex t ⇒ Dynamic t E.A → Dynamic t Bool
 hasActive ea = do
-  let dcn = fmap attrGetClassName ea
-  fmap (\(ClassName cn) -> T.count "active" cn > 0) dcn
+  let dcn = fmap A.attrGetClassName ea
+  fmap (\(A.ClassName cn) → T.count "active" cn > 0) dcn
 
 
-mkMenuItemD :: forall t m. (MonadWidget t m)
-            => Dynamic t EA -> MenuItem -> m (MI t)
+mkMenuItemD ∷ forall t m. (MonadWidget t m)
+            ⇒ Dynamic t E.A → MenuItem → m (MI t)
 mkMenuItemD cls mi@(MenuItem txt ico) = do
-  (e,_) <- eAD' cls $ do
-    if ico /= ClassName ""
-       then eI (setClasses [ico, semIcon ] def) blank
+  (e,_) ← E.aD' cls $ do
+    if ico /= A.ClassName ""
+       then E.i (A.setClasses [ico, semIcon ] E.defI) blank
        else blank
     text txt
     -- let da = hasActive cls
-    -- dyn $ ffor da $ \b ->
+    -- dyn $ ffor da $ \b →
     --         if b
-    --            then eSpan (setClasses [bsSrOnly] def) $ text "(current)"
+    --            then E.span (A.setClasses [bsSrOnly] E.defSpan) $ text "(current)"
     --            else pure ()
   pure $ MI (domEvent Click e) mi
 
-mkLiMe :: MonadWidget t m => Dynamic t EA -> MenuItem -> m (MI t)
--- mkLiMe cls mi = eLi (setClasses [bsNavItem] def) $ mkMenuItemD cls mi
+mkLiMe ∷ MonadWidget t m ⇒ Dynamic t E.A → MenuItem → m (MI t)
+-- mkLiMe cls mi = E.li (A.setClasses [bsNavItem] E.defLi) $ mkMenuItemD cls mi
 mkLiMe = mkMenuItemD
 
-mkLiMeFromLsts :: MonadWidget t m
-               => [Dynamic t EA] -> [MenuItem] -> Int -> m (MI t)
+mkLiMeFromLsts ∷ MonadWidget t m
+               ⇒ [Dynamic t E.A] → [MenuItem] → Int → m (MI t)
 mkLiMeFromLsts aLst mLst i = mkLiMe (aLst Prelude.!! i) (mLst Prelude.!! i)
 
-mkSemNavItems :: forall t m.
-  MonadWidget t m => [MenuItem] -> m (Dynamic t MenuItem)
+mkSemNavItems ∷ forall t m.
+  MonadWidget t m ⇒ [MenuItem] → m (Dynamic t MenuItem)
 mkSemNavItems menuis = mdo
   let i = length menuis
       idxLst = [0..(i-1)]
   -- eUl ulCl $ mdo
-  es :: [MI t] <- mapM (mkLiMeFromLsts mas menuis) idxLst
-  -- e1 :: (MI t) <- mkLiMeFromLsts mas menuis 0
-  -- e2 <- mkLiMeFromLsts mas menuis 1
-  -- e3 <- mkLiMeFromLsts mas menuis 2
-  -- e4 <- mkLiMeFromLsts mas menuis 3
+  es ∷ [MI t] ← mapM (mkLiMeFromLsts mas menuis) idxLst
+  -- e1 ∷ (MI t) ← mkLiMeFromLsts mas menuis 0
+  -- e2 ← mkLiMeFromLsts mas menuis 1
+  -- e3 ← mkLiMeFromLsts mas menuis 2
+  -- e4 ← mkLiMeFromLsts mas menuis 3
   -- let es = [e1,e2,e3,e4]
-  dE :: Dynamic t MenuItem <- holdDyn (head menuis) $
-    leftmost (fmap (\e -> miItem e <$ miClicked e) es)
-  let mas = fmap (\j -> ffor dE $ \d -> selActive d j) idxLst
+  dE ∷ Dynamic t MenuItem ← holdDyn (head menuis) $
+    leftmost (fmap (\e → miItem e <$ miClicked e) es)
+  let mas = fmap (\j → ffor dE $ \d → selActive d j) idxLst
   pure dE
   where
-    selActive :: MenuItem -> Int -> EA
+    selActive ∷ MenuItem → Int → E.A
     selActive d i =
         if d == menuis Prelude.!! i
            then hR "#" linkCA
            else hR "#" linkC
-    linkC = setClasses [semItem] def
-    linkCA = setClasses [semItem, semActive] def
-    -- ulCl = setClasses [bsNavbarNav, bsMrAuto] def
-    hR u = href (URL u)
+    linkC = A.setClasses [semItem] E.defA
+    linkCA = A.setClasses [semItem, semActive] E.defA
+    -- ulCl = A.setClasses [bsNavbarNav, bsMrAuto] E.defA
+    hR u = A.href (A.URL u)
 
 
-semNav :: (MonadWidget t m) => m (Dynamic t MenuItem)
+semNav ∷ (MonadWidget t m) ⇒ m (Dynamic t MenuItem)
 semNav =
-  eDiv navAttrs $ do
-    mi <- eDiv uiconAttrs $ do
-      _e0 <- eAC (setClasses [semHeader, semItem] $ hR "#" def) $
+  E.div navAttrs $ do
+    mi ← E.div uiconAttrs $ do
+      _e0 ← E.aC (A.setClasses [semHeader, semItem] $ hR "#" E.defA) $
         text "Project name"
       -- eButton bAttrs $ eSpan (setClasses [bsNavbarTogglerIcon] def ) blank
-      -- dE2 <- eDiv divCl $ do
-      dE2 <- mkSemNavItems menuItems
+      -- dE2 ← eDiv divCl $ do
+      dE2 ← mkSemNavItems menuItems
       pure dE2
       -- pure dE2
     pure mi
   where
-    navAttrs = setClasses [semUi,semFixed, semInverted, semMenu] def
-    uiconAttrs = setClasses [semUi, semContainer] def
-    -- bAttrs = setClasses [bsNavbarToggler] $ btSubmit
-    --   $ dToggle "collapse" $ dTarget "#navbarSupportedContent"
-    --   $ aControls "navbarSupportedContent" $ aExpanded "false"
-    --   $ aLabel "Toggle navigation" def
-    hR u = href (URL u)
-    -- divCl = setClasses [bsCollapse, bsNavbarCollapse]
-    --   $ id_ "navbarSupportedContent" def
+    navAttrs = A.setClasses [semUi,semFixed, semInverted, semMenu] E.defDiv
+    uiconAttrs = A.setClasses [semUi, semContainer] E.defDiv
+    -- bAttrs = A.setClasses [bsNavbarToggler] $ A.btSubmit
+    --   $ A.dToggle "collapse" $ A.dTarget "#navbarSupportedContent"
+    --   $ A.aControls "navbarSupportedContent" $ A.aExpanded "false"
+    --   $ A.aLabel "Toggle navigation" E.defButton
+    hR u = A.href (A.URL u)
+    -- divCl = A.setClasses [bsCollapse, bsNavbarCollapse]
+    --   $ A.id_ "navbarSupportedContent" E.defDiv
 
 {-
  <div class="ui fixed inverted menu">

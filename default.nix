@@ -2,10 +2,11 @@
 (import ./reflex-platform {}).project ({ pkgs, ... }: {
   packages = {
     reflex-dom-themes  = ./.;
+    examplesBulma  = ./examplesBulma;
+    examplesW3  = ./examplesW3;
     examplesBs  = ./examplesBs;
     examplesFou = ./examplesFou;
     examplesSem = ./examplesSem;
-    examplesW3  = ./examplesW3;
   };
   overrides = self: super: {
     reflex-dom-htmlea = self.callCabal2nix "reflex-dom-htmlea"
@@ -13,8 +14,8 @@
       (pkgs.fetchFromGitHub {
         owner = "gspia";
         repo = "reflex-dom-htmlea";
-        rev = "64a3ad9c234a722f76841839a9a7c5caa68318dc";
-        sha256 = "0y53la83n969b3py2smckrrn1g45i9hwbz7jn77aisfydpd0blda";
+        rev = "0baf429ad8e4a19b6e2575ffc828efe521e44f0f";
+        sha256 = "1aly8n6p746cgbabsp54ynfjsfbcj64np04rzma46djvwq4kcfv0"";
       }) {};
   };
 
@@ -31,20 +32,19 @@
 
   shells = {
     ghc   = [ "reflex-dom-themes" "examplesBs" "examplesFou" 
-              "examplesSem" "examplesW3" ];
+              "examplesSem" "examplesW3" "examplesBulma" ];
     ghcjs = [ "reflex-dom-themes" "examplesBs" "examplesFou"
-              "examplesSem" "examplesW3" ];
+              "examplesSem" "examplesW3" "examplesBulma" ];
   };
   tools = ghc: with ghc; [
-    /* pkgs.haskellPackages.ghc-mod */
-    pkgs.haskellPackages.hasktags
-    pkgs.haskellPackages.haskdogs
-    /* pkgs.haskellPackages.hdevtools */
-    pkgs.haskellPackages.hindent
-    pkgs.haskellPackages.hsimport
     pkgs.haskellPackages.hlint
-    pkgs.haskellPackages.pointfree
-    pkgs.haskellPackages.pointful
-    pkgs.haskellPackages.stylish-haskell
+    /* pkgs.haskellPackages.hdevtools */
+    # pkgs.haskellPackages.hasktags
+    # pkgs.haskellPackages.haskdogs
+    # pkgs.haskellPackages.hindent
+    # pkgs.haskellPackages.hsimport
+    # pkgs.haskellPackages.pointfree
+    # pkgs.haskellPackages.pointful
+    # pkgs.haskellPackages.stylish-haskell
   ];
 })

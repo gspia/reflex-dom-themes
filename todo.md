@@ -4,6 +4,8 @@
 - [ ] Find out a common interface (and easier than in the current examples) 
       for tables on different css-libs.
 - [ ] Find out a common interface for menus on different css-libs.
+- [ ] Add configuration options for menus.
+- [ ] Add configuration options for dropdowns.
 - [ ] Menu-choice: implement one that shows the current selection on widget.
 - [ ] Menu-choice: implement one where multiple choices are possible.
 
@@ -23,6 +25,15 @@
 - [ ] Make ios-versions work.
 - [ ] Start a clay-package based css-lib supporting the components we implement.
       See [clay](http://hackage.haskell.org/package/clay).
+- [ ] Find out common parts for the menu-component (common between css-libs)
+- [ ] Find out common parts for the dropdown-component (common between css-libs)
+ 
+ 
+## Bulma
+
+- [ ] Add an example of naive I18n.
+- [ ] Add more table examples.
+- [ ] Fix the navbar dropdown problem.
 
 ## Bootstrap
 
@@ -39,6 +50,7 @@
 
 - [ ] Add an example of naive I18n.
 - [ ] Add more table examples.
+- [ ] Fix the navbar dropdown problem.
 
 ## Semantic
 

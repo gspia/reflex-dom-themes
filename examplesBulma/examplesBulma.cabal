@@ -1,6 +1,6 @@
-name:                examplesBs
+name:                examplesBulma
 version:             0.1.0.3
-synopsis:            Bootstrap 4 theme examples
+synopsis:            Bulma theme examples
 description:         Examples: for ghcid dev-work, for nix-build and
                      for building a webkit2gtk app.
 license:             BSD3
@@ -12,12 +12,11 @@ build-type:          Simple
 cabal-version:       >=1.24
 
 library
-  exposed-modules:     MainBs
-  hs-source-dirs:      libBs
+  exposed-modules:     MainBulma
+  hs-source-dirs:      libBulma
   default-language:    Haskell2010
   build-depends:        base
                       , containers
-                      -- , file-embed
                       , lens
                       , mtl
                       , text
@@ -27,20 +26,18 @@ library
                       , reflex-dom
                       , reflex-dom-core
                       , jsaddle
-                      -- , jsaddle-warp
                       , reflex-dom-htmlea
                       , reflex-dom-themes
 
 
-executable examplesBs
+executable examplesBulma
   main-is:           Main.hs
   hs-source-dirs:    app
   default-language:  Haskell2010
   build-depends:       base
-                     , examplesBs
+                     , examplesBulma
                      , reflex-dom
                      , jsaddle
-                     -- , jsaddle-warp
   ghc-options: -Wall -Wincomplete-uni-patterns 
                -O2 -threaded -rtsopts -with-rtsopts=-N
                -Wincomplete-record-updates 
@@ -48,24 +45,24 @@ executable examplesBs
 
 -- To use ghcid and dev-server.sh, uncomment the following before
 -- entering into the nix-shell.
--- executable examplesBs-wai
-    -- if impl(ghcjs)
-        -- buildable:       False
-    -- main-is:           Main.hs
-    -- hs-source-dirs:    app-wai
-    -- default-language:  Haskell2010
-    -- build-depends:       base
-                        -- , examplesBs
-                        -- , reflex-dom
-                        -- , reflex-dom-core
-                        -- , jsaddle
-                        -- , jsaddle-warp
-                        -- -- following are for ghcid autoloading
-                        -- , wai
-                        -- , warp
-                        -- , websockets
-                        -- , wai-app-static
-    -- ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates
-                -- -O2 -threaded -rtsopts -with-rtsopts=-N
-                -- -Wmissing-import-lists -Wno-redundant-constraints
-
+-- executable examplesBulma-wai
+--   if impl(ghcjs)
+--     buildable:       False
+--   main-is:           Main.hs
+--   hs-source-dirs:    app-wai
+--   default-language:  Haskell2010
+--   build-depends:       base
+--                      , examplesBulma
+--                      , reflex-dom
+--                      , reflex-dom-core
+--                      , jsaddle
+--                      , jsaddle-warp
+--                      -- following are for ghcid autoloading
+--                      , wai
+--                      , warp
+--                      , websockets
+--                      , wai-app-static
+--   ghc-options: -Wall -Wincomplete-uni-patterns -Wincomplete-record-updates
+--                -O2 -threaded -rtsopts -with-rtsopts=-N
+--                -Wmissing-import-lists -Wno-redundant-constraints
+-- 

@@ -1,6 +1,7 @@
 packages: 
   reflex-dom-themes.cabal
+  examplesBulma/
+  examplesW3/
   examplesBs/
   examplesSem/
   examplesFou/
-  examplesW3/

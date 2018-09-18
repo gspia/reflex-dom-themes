@@ -1,20 +1,18 @@
 :set prompt "> "
-:set -ilib/src:examplesBs/libBs:examplesFou/libFou:examplesSem/libSem:examplesW3/libW3:test
+:set -ilib/src:examplesBs/libBs:examplesFou/libFou:examplesSem/libSem:examplesW3/libW3:test:examplesBulma/libBulma
 
 -- With ghci
 -- 
 :def! reload (const $ return "::reload\nLanguage.Javascript.JSaddle.Warp.debug 8000 mainW")
 -- 
 -- After :load MainBs, write :reload
--- In place of MainBs, there are also mainFou, mainSem and mainW3 above to load.
+-- In place of MainBs, there are also MainBulma, MainFou, MainSem and MainW3 above to load.
 
 -- With ghcid (start it with ./dev-server.sh)
 -- 
--- :load examplesBs/app-wai/Main.hs
--- Note that the js-files are not loaded with the above setting, so
--- it's useability is quite limited at the moment.
-
 -- The following don't work very well atm
 -- :load examplesFou/app-wai/Main.hs
 -- :load examplesSem/app-wai/Main.hs
 -- :load examplesW3/app-wai/Main.hs
+-- :load examplesBs/app-wai/Main.hs
+-- :load examplesBulma/app-wai/Main.hs
