@@ -14,8 +14,8 @@
       (pkgs.fetchFromGitHub {
         owner = "gspia";
         repo = "reflex-dom-htmlea";
-        rev = "0baf429ad8e4a19b6e2575ffc828efe521e44f0f";
-        sha256 = "1aly8n6p746cgbabsp54ynfjsfbcj64np04rzma46djvwq4kcfv0";
+        rev = "2900ca4a6840c2362fe56cd9b6cdf7744a646fdd";
+        sha256 = "06hjrpnv9314dfdl18a0sm7dxwcx8ps278bfc330h39wb9c7iqi9";
       }) {};
   };
 

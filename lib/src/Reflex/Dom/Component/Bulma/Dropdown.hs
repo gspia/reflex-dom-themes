@@ -41,7 +41,6 @@ import           Data.List              (inits)
 import qualified Data.Map               as Map
 import           Data.Map               (Map)
 -- import           Data.Maybe
-import           Data.Semigroup
 -- import           Data.Set               (Set)
 -- import qualified Data.Set               as Set
 import           Data.Text (Text)
@@ -67,7 +66,7 @@ import           Reflex.Dom.Component.NaiveI18n
 import           Reflex.Dom.Component.MenuCommon
 -- import           Reflex.Dom.Component.Bulma.Menu
 import qualified Reflex.Dom.Theme.Raw.Bulma as B
-import qualified Reflex.Dom.Icon.Raw.FA     as FA
+-- import qualified Reflex.Dom.Icon.Raw.FA     as FA
 
 --------------------------------------------------------------------------------
 
@@ -280,11 +279,11 @@ mkDropdown trMic dInitElms dLang updLang = do
         -- [B.dropdown] E.defDiv
     buttonRootNAttrs ∷ ActiveState t ActNode (MenuItem t a)
          → Dynamic t A.Attr
-    buttonRootNAttrs ast = pure (A.attrMap
+    buttonRootNAttrs _ast = pure (A.attrMap
                                   ( A.setClasses [B.button]
                                   $ A.aHaspopup "true" $ A.aControls "dropdown-menu"
                                   $ E.defButton)
-                                )
+                                 )
     -- Next one is for drop-down menu items (that is, level 2 or further).
     -- This is for the node elements that are individual items.
     aAttr ∷ ActiveState t ActNode (MenuItem t a)
@@ -304,7 +303,7 @@ mkDropdown trMic dInitElms dLang updLang = do
             → ActNode
             -- what we are now making
             → Dynamic t A.Attr
-    divAttr trA dAst an = fmap (\cls → A.attrMap $ A.setClasses cls
+    divAttr _trA dAst an = fmap (\cls → A.attrMap $ A.setClasses cls
                                --  A.aLabelledby lblName
                                --  A.id_ "dropdown-menu"
                                --  A.rMenu
@@ -319,12 +318,12 @@ mkDropdown trMic dInitElms dLang updLang = do
                           then _activeStateActive an2
                           else constDyn False
               ) <$> dAst 
-        mNd = getNodeAtPath trA (getPath an)
-        lblName = -- "dropdown" <> (T.pack . show . getPath $ an)
-            case mNd of
-              Just nd → "dropdown" <> (T.pack . show $ _menuItemMenuTag nd)
-              -- Just nd → "dropdownMenuLink"
-              Nothing → "dropdownUnknown"
+        -- mNd = getNodeAtPath trA (getPath an)
+        -- lblName = -- "dropdown" <> (T.pack . show . getPath $ an)
+        --     case mNd of
+        --       Just nd → "dropdown" <> (T.pack . show $ _menuItemMenuTag nd)
+        --       -- Just nd → "dropdownMenuLink"
+        --       Nothing → "dropdownUnknown"
 
 
 
@@ -339,7 +338,7 @@ drawRootI ∷ forall t m a . (Reflex t, DomBuilder t m, PostBuild t m
        → ActiveState t ActNode (MenuItem t a)
        → m (Element EventResult (DomBuilderSpace m) t
            , Dynamic t (MenuItem t a))
-drawRootI dMic actS = do
+drawRootI dMic _actS = do
     let -- dTxt = (T.pack . show . _menuItemMenuTag) <$> dMic
         dIco = _menuItemIcons <$> dMic
         -- dIsDD = _menuItemDD <$> dMic -- True indicates a dropdown
@@ -366,7 +365,7 @@ drawDDMI ∷ forall t m a . (Reflex t, DomBuilder t m, PostBuild t m
        → ActiveState t ActNode (MenuItem t a)
        → m (Element EventResult (DomBuilderSpace m) t
            , Dynamic t (MenuItem t a))
-drawDDMI dMic actS = do
+drawDDMI dMic _actS = do
     let -- dTxt = (T.pack . show . _menuItemMenuTag) <$> dMic
         dIco = _menuItemIcons <$> dMic
         -- dIsDD = _menuItemDD <$> dMic -- True indicates a dropdown
@@ -394,7 +393,7 @@ drawMILeaf ∷ forall t m a . (Reflex t, DomBuilder t m, PostBuild t m
 drawMILeaf dMic actS = do
     let dUse = elemAttrs E.defDiv actS
         dIco = _menuItemIcons <$> dMic
-        dActive = _activeStateActive actS
+        -- dActive = _activeStateActive actS
         ddLbl2 ∷ Dynamic t (Dynamic t Text) = _menuItemLabel <$> dMic
         dLbl = join ddLbl2
     -- (e,_) ← drawDivWdt (constDyn ) dMic actS
@@ -404,7 +403,7 @@ drawMILeaf dMic actS = do
     -- text "drawMILeaf"
     E.brN blank
     (e,_) ← E.divD' dUse $ do
-        dyn $ ffor dIco $ \ico → do
+        _ ← dyn $ ffor dIco $ \ico → do
             if null ico
                then blank
                else E.span (A.setClasses ico E.defSpan) blank
@@ -436,9 +435,9 @@ customMkLevelDD ∷ forall t m a . (Reflex t, DomBuilder t m, PostBuild t m
        -- ^ Some content...
        → m [CompEvent t ActNode a]
 customMkLevelDD lvlFs dmlst evB trSt pth treeE = do
-    let (anR ∷ ActiveState t ActNode a , dR ∷ Dynamic t a ) = rootLabel treeE
+    let (_anR ∷ ActiveState t ActNode a , dR ∷ Dynamic t a ) = rootLabel treeE
         dLbl = (T.pack . show) <$> dR
-        isAct = _activeStateActive anR
+        -- isAct = _activeStateActive anR
     -- text "customMkLevelDD, dLbl = "
     dynText dLbl
     let  divCl = A.setClasses [B.dropdownMenu]

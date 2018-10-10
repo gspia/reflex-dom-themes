@@ -41,14 +41,12 @@ import           Data.List              (inits)
 import qualified Data.Map               as Map
 import           Data.Map               (Map)
 -- import           Data.Maybe
-import           Data.Semigroup
 -- import           Data.Set               (Set)
 -- import qualified Data.Set               as Set
 import           Data.Text (Text)
 import qualified Data.Text as T
 import           Data.Tree
 
-import           Language.Javascript.JSaddle
 -- import           Reflex
 -- import           Reflex.Dom                             hiding (mainWidget)
 import           Reflex.Dom.Core
@@ -283,7 +281,7 @@ mkDropdown trMic dInitElms dLang updLang = do
       where
         dIdTxt = ( ("dropdown" <>) . (T.pack . show . _menuItemMenuTag ))
             <$> _activeStateRetVal ast
-    aRootAttrs ∷ ActiveState t ActNode (MenuItem t a)
+    {-aRootAttrs ∷ ActiveState t ActNode (MenuItem t a)
          → Dynamic t A.Attr
     -- aRootAttrs ast = pure $ A.attrMap $
     aRootAttrs ast = fmap (\idTxt → A.attrMap $
@@ -297,6 +295,7 @@ mkDropdown trMic dInitElms dLang updLang = do
       where
         dIdTxt = ( ("dropdown" <>) . (T.pack . show . _menuItemMenuTag ))
             <$> _activeStateRetVal ast
+    -}
     -- Next one is for drop-down menu items (that is, level 2 or further).
     -- This is for the node elements that are individual items.
     aAttr ∷ ActiveState t ActNode (MenuItem t a)
@@ -324,7 +323,7 @@ mkDropdown trMic dInitElms dLang updLang = do
                               then _activeStateActive an2
                               else constDyn False
                         ) <$> dAst
-        mRt ∷ Maybe (MenuItem t a) = getNodeAtPath trA [0]
+        -- mRt ∷ Maybe (MenuItem t a) = getNodeAtPath trA [0]
         mNd = getNodeAtPath trA (getPath an)
         lblName = -- "dropdown" <> (T.pack . show . getPath $ an)
             case mNd of
@@ -345,7 +344,7 @@ drawRootI ∷ forall t m a . (Reflex t, DomBuilder t m, PostBuild t m
        → ActiveState t ActNode (MenuItem t a)
        → m (Element EventResult (DomBuilderSpace m) t
            , Dynamic t (MenuItem t a))
-drawRootI dMic actS = do
+drawRootI dMic _actS = do
     let -- dTxt = (T.pack . show . _menuItemMenuTag) <$> dMic
         dIco = _menuItemIcons <$> dMic
         -- dIsDD = _menuItemDD <$> dMic -- True indicates a dropdown
@@ -372,14 +371,14 @@ drawDDMI ∷ forall t m a . (Reflex t, DomBuilder t m, PostBuild t m
        → ActiveState t ActNode (MenuItem t a)
        → m (Element EventResult (DomBuilderSpace m) t
            , Dynamic t (MenuItem t a))
-drawDDMI dMic actS = do
+drawDDMI dMic _actS = do
     let -- dTxt = (T.pack . show . _menuItemMenuTag) <$> dMic
         dIco = _menuItemIcons <$> dMic
-        dIsDD = _menuItemDD <$> dMic -- True indicates a dropdown
-        dActive = _activeStateActive actS
+        -- dIsDD = _menuItemDD <$> dMic -- True indicates a dropdown
+        -- dActive = _activeStateActive actS
         -- pth = getPath $ _activeStateElemId actS
-        dLblName =
-            (("dropdown" <> ) . T.pack . show . _menuItemMenuTag) <$> dMic
+        -- dLblName =
+        --     (("dropdown" <> ) . T.pack . show . _menuItemMenuTag) <$> dMic
         -- dAAttrs =
         --     fmap (\(isDD,lblName) →
         --          if isDD

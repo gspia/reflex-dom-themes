@@ -1,5 +1,10 @@
 # Revision history for reflex-dom-themes
 
+## 0.1.0.4  -- 2018-10-10
+
+* Update reflex-platform to new version allowing ghc and ghcjs 8.4.
+* Minor updates (cleaned up some warnings).
+* Put ChangeLog and cabal versioning in sync with git versioning. 
 
 ## 0.1.0.3  -- 2018-09-18
 

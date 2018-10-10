@@ -1,5 +1,5 @@
 name:                reflex-dom-themes
-version:             0.1.0.3
+version:             0.1.0.4
 synopsis:            Class names for various css libs and icon sets.
 description:         Experimental set of functions providing tools to 
                      theming on top of reflex-dom-htmlea.

@@ -40,7 +40,6 @@ import           Data.List                      (inits)
 import qualified Data.Map                       as Map
 import           Data.Map                       (Map)
 -- import           Data.Maybe
-import           Data.Semigroup
 -- import           Data.Set                        (Set)
 -- import qualified Data.Set                        as Set
 import           Data.Text (Text)
@@ -310,12 +309,13 @@ mkMenuBarCommon mkL1 trMic dLang updLang = do
     pure eCsAnMi
   where
     -- not used atm: (could we start using?)
-    divNmAttrs ∷ Dynamic t (ActiveState t ActNode (MenuItem t a))
+    {- divNmAttrs ∷ Dynamic t (ActiveState t ActNode (MenuItem t a))
          → ActNode → Dynamic t A.Attr
     divNmAttrs _dAst _an = pure $ A.attrMap
         $ A.setClasses [fouTitleBar, fouHideForMedium]
         $ A.dNmVal "responsive-toggle" "responsivemenu"
         $ A.dNmVal "hide-for" "medium" E.defDiv
+    -}
     -- navAttrs ∷ Dynamic t (ActiveState t ActNode (MenuItem t a))
     --      → ActNode → Dynamic t A.Attr
     -- navAttrs _dAst _an = pure $ A.attrMap $  A.setClasses
@@ -404,7 +404,7 @@ drawMI ∷ forall t m a . (Reflex t, DomBuilder t m, PostBuild t m
        → ActiveState t ActNode (MenuItem t a)
        → m (Element EventResult (DomBuilderSpace m) t
            , Dynamic t (MenuItem t a))
-drawMI dMic actS = do
+drawMI dMic _actS = do
     let -- dTxt = (T.pack . show . _menuItemMenuTag) <$> dMic
         dIco = _menuItemIcons <$> dMic
         dIsDD = _menuItemDD <$> dMic -- True indicates a dropdown
@@ -496,7 +496,7 @@ customMkLevelN ∷ forall t m a . (Reflex t, DomBuilder t m, PostBuild t m
        -- ^ Some content...
        → m [CompEvent t ActNode a]
 customMkLevelN lvlFs dmlst evB trSt pth treeE = do
-    let (_anR, dR) = rootLabel treeE
+    -- let (_anR, _dR) = rootLabel treeE
     -- (evA,_) ← E.a' (A.setClasses [bsNavbarBrand] E.defA)
     --     $ dynText ((T.pack . show) <$> dR)
     -- E.div (A.setClasses [fouTitleBar, fouHideForMedium]
@@ -529,8 +529,8 @@ customMkLevelN lvlFs dmlst evB trSt pth treeE = do
     --     $ A.aLabel "Toggle navigation" E.defButton
     -- divCl = A.setClasses [bsCollapse, bsNavbarCollapse]
     --     $ A.id_ "navbarSupportedContent" E.defDiv
-    bAttrs = A.setClasses [fouMenuIcon] $ A.btButton
-        $ A.dToggle "responsivemenu" E.defButton
+    -- bAttrs = A.setClasses [fouMenuIcon] $ A.btButton
+    --     $ A.dToggle "responsivemenu" E.defButton
     divCl = A.setClasses [fouTopBar] $ A.id_ "responsivemenu"
       $ A.dNmVal "toggler" "" E.defDiv
 

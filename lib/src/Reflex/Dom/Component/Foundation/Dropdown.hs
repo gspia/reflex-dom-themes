@@ -41,7 +41,6 @@ import           Data.List              (inits)
 import qualified Data.Map               as Map
 import           Data.Map               (Map)
 -- import           Data.Maybe
-import           Data.Semigroup
 -- import           Data.Set               (Set)
 -- import qualified Data.Set               as Set
 import           Data.Text (Text)

@@ -40,7 +40,6 @@ import           Data.List                      (inits)
 import qualified Data.Map                       as Map
 import           Data.Map                       (Map)
 -- import           Data.Maybe
-import           Data.Semigroup
 -- import           Data.Set                        (Set)
 -- import qualified Data.Set                        as Set
 import           Data.Text (Text)
@@ -65,7 +64,7 @@ import           Reflex.Dom.HTML5.Component.Common.RfpUtils
 import           Reflex.Dom.Component.NaiveI18n
 import           Reflex.Dom.Component.MenuCommon
 import           Reflex.Dom.Theme.Raw.BS4 as B
-import           Reflex.Dom.Theme.Raw.W3 as W
+-- import           Reflex.Dom.Theme.Raw.W3 as W
 
 
 --------------------------------------------------------------------------------

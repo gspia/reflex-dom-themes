@@ -40,7 +40,6 @@ import           Data.List                      (inits)
 import qualified Data.Map                       as Map
 import           Data.Map                       (Map)
 -- import           Data.Maybe
-import           Data.Semigroup
 -- import           Data.Set                        (Set)
 -- import qualified Data.Set                        as Set
 import           Data.Text (Text)
@@ -316,10 +315,10 @@ mkMenuBarCommon mkL1 trMic dLang updLang = do
     navAttrs _dAst _an = pure $ A.attrMap
         $ A.setClasses [B.navbar, B.isFixedTop]
         $ A.role "navigation" $ A.aLabel "main navigation" E.defNav
-    divRootAttrs ∷  ActiveState t ActNode (MenuItem t a)
-            -- last node where event occurred
-            → Dynamic t A.Attr
-    divRootAttrs ast = pure $ A.attrMap $ A.setClasses [B.navbarBrand] E.defDiv
+    -- divRootAttrs ∷  ActiveState t ActNode (MenuItem t a)
+    --         -- last node where event occurred
+    --         → Dynamic t A.Attr
+    -- divRootAttrs ast = pure $ A.attrMap $ A.setClasses [B.navbarBrand] E.defDiv
     divAttr ∷  Dynamic t (ActiveState t ActNode (MenuItem t a))
             -- last node where event occurred
             → ActNode
@@ -423,16 +422,16 @@ drawMI ∷ forall t m a . (Reflex t, DomBuilder t m, PostBuild t m
        → ActiveState t ActNode (MenuItem t a)
        → m (Element EventResult (DomBuilderSpace m) t
            , Dynamic t (MenuItem t a))
-drawMI dMic actS = do
+drawMI dMic _actS = do
     let -- dTxt = (T.pack . show . _menuItemMenuTag) <$> dMic
         dIco = _menuItemIcons <$> dMic
         dIsDD = _menuItemDD <$> dMic -- True indicates a dropdown
-        dActive = _activeStateActive actS
+        -- dActive = _activeStateActive actS
         -- pth = getPath $ _activeStateElemId actS
         dLblName =
             (("dropdown" <> ) . T.pack . show . _menuItemMenuTag) <$> dMic
         dDivAttrs =
-            fmap (\(isDD,lblName) →
+            fmap (\(isDD,_lblName) →
                  if isDD
                      then A.setClasses [B.navbarItem, B.navbarLink] E.defDiv
                      else A.setClasses [B.navbarItem] E.defDiv
@@ -466,7 +465,7 @@ drawMILeaf ∷ forall t m a . (Reflex t, DomBuilder t m, PostBuild t m
 drawMILeaf dMic actS = do
     let dUse = elemAttrs E.defDiv actS
         dIco = _menuItemIcons <$> dMic
-        dActive = _activeStateActive actS
+        -- dActive = _activeStateActive actS
         ddLbl2 ∷ Dynamic t (Dynamic t Text) = _menuItemLabel <$> dMic
         dLbl = join ddLbl2
     (e,_) ← E.divD' dUse $ do
@@ -542,7 +541,7 @@ customMkLevelLst lvlFs dmlst evB trSt pth treeE = do
         pure (ceA1,ceA2)
     rec
         dOpen ← toggle False $ leftmost [() <$ _ceMUp ceB, () <$ eClose]
-        let sf = subForest treeE
+        let -- sf = subForest treeE
             dDivCl =
                 fmap (\o →
                      if o
